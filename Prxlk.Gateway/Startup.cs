@@ -66,11 +66,8 @@ namespace Prxlk.Gateway
         public void Configure(IApplicationBuilder app)
         {
             if (Environment.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-            else
             {
-                app.UseHsts();
-                app.UseHttpsRedirection();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseMvc();

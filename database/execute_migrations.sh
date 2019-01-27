@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Launch MSSQL and send to background
 /opt/mssql/bin/sqlservr &
 # Wait for it to be available
