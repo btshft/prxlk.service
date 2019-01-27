@@ -7,17 +7,12 @@
     <ItemGroup>
       <PackageReference Include="MediatR" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+      <PackageReference Include="System.Interactive.Async" Version="3.2.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Prxlk.Contracts\Prxlk.Contracts.csproj" />
       <ProjectReference Include="..\Prxlk.Shared\Prxlk.Shared.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="System.Interactive.Async, Version=3.2.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\system.interactive.async\3.2.0\lib\netstandard2.0\System.Interactive.Async.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>

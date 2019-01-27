@@ -290,6 +290,9 @@ paket-files/
 .idea/
 *.sln.iml
 
+.env
+.certs
+
 # CodeRush
 .cr/
 

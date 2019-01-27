@@ -1,0 +1,42 @@
+version: '3.6'
+
+services:
+  proxy.api:
+    container_name: proxy_api
+    build:
+      context: .
+      dockerfile: Prxlk.Gateway/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: 5050
+      ASPNETCORE_Kestrel__Certificates__Default__Password: ${PRXLK_SERVICE_CERT_PASSWORD}
+      ASPNETCORE_Kestrel__Certificates__Default__Path: ${PRXLK_SERVICE_CERT_PATH}
+    volumes:
+      - .certs/https:/https/
+    ports:
+      - 5050:443
+      - 5049:80
+    networks:
+      - main-network
+    depends_on:
+      - proxy.db
+  proxy.db:
+    container_name: proxy_db
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+      SA_PASSWORD: ${PRXLK_DATABASE_PASSWORD}
+      ACCEPT_EULA: "Y"
+    volumes:
+      - ./database:/database
+    ports:
+      - 1433:1433
+    networks:
+      - main-network
+    command: 
+      - /bin/bash
+      - /database/execute_migrations.sh
+  
+networks:
+  main-network:
+    driver: bridge

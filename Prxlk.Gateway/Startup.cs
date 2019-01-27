@@ -15,29 +15,19 @@ namespace Prxlk.Gateway
 {
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; set; }
+        public IHostingEnvironment Environment { get; set; }
         
-        public IHostingEnvironment Environment { get; }
-
-        public Startup(IHostingEnvironment environment)
+        public Startup(IHostingEnvironment environment, IConfiguration configuration)
         {
-            var configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true);
-
-            if (environment.IsProduction())
-                configurationBuilder.AddUserSecrets<Startup>();
-
-            configurationBuilder.AddEnvironmentVariables();
-            
-            Configuration = configurationBuilder.Build();
             Environment = environment;
+            Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddOptions()
                 .Configure<ProxyCoreOptions>(o =>
                 {
                     Configuration.GetSection("Core").Bind(o);
@@ -51,16 +41,6 @@ namespace Prxlk.Gateway
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonFormatters()
                 .AddApiExplorer();
-
-            if (Environment.IsDevelopment())
-            {
-                services.AddLogging(o => o.SetMinimumLevel(LogLevel.Debug)
-                    .AddDebug());
-            }
-            else
-            {
-                services.AddLogging(o => o.SetMinimumLevel(LogLevel.Warning));
-            }
 
             services.AddHealthChecks();
             services.AddApiVersioning(o =>

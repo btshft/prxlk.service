@@ -27,7 +27,7 @@ namespace Prxlk.Data.EntityFramework
         private static DbContextOptions CreateOptions(string connectionString)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ProxyDbContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ProxiesDb;Integrated Security=true;");
+            optionsBuilder.UseSqlServer(connectionString);
 
             return optionsBuilder.Options;
         }

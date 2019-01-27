@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Prxlk.Gateway
 {
@@ -7,11 +8,16 @@ namespace Prxlk.Gateway
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .ConfigureLogging((hc, lg) =>
+                {
+                    lg.AddConfiguration(hc.Configuration.GetSection("Logging"))
+                        .AddConsole()
+                        .AddDebug();
+                })
+                .UseStartup<Startup>()
+                .Build()
+                .Run();
+        }
     }
 }
