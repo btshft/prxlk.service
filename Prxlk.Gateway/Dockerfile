@@ -8,7 +8,7 @@ WORKDIR /src
 COPY ["/Prxlk.Application/*.csproj", "Prxlk.Application/"]
 COPY ["/Prxlk.ComponentRegistrar/*.csproj", "Prxlk.ComponentRegistrar/"]
 COPY ["/Prxlk.Contracts/*.csproj", "Prxlk.Contracts/"]
-COPY ["/Prxlk.Data.EntityFramework/*.csproj", "Prxlk.Data.EntityFramework/"]
+COPY ["/Prxlk.Data.MongoDb/*.csproj", "Prxlk.Data.MongoDb/"]
 COPY ["/Prxlk.Domain/*.csproj", "Prxlk.Domain/"]
 COPY ["/Prxlk.Gateway/*.csproj", "Prxlk.Gateway/"]
 COPY ["/Prxlk.Shared/*.csproj", "Prxlk.Shared/"]

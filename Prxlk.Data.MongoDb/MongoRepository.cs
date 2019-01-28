@@ -10,8 +10,6 @@ using Prxlk.Domain.Specifications.Shared;
 
 namespace Prxlk.Data.MongoDb
 {
-    
-    
     public class MongoRepository<TEntity> : IQueryRepository<TEntity>, IRepository<TEntity> 
         where TEntity : GuidEntity
     {
