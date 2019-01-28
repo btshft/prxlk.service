@@ -31,7 +31,9 @@ namespace Prxlk.Gateway
                 .Configure<ProxyCoreOptions>(o =>
                 {
                     Configuration.GetSection("Core").Bind(o);
-                    o.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
+                    o.MssqlConnectionString = Configuration.GetConnectionString("DefaultConnection");
+                    o.MongoDbConnectionString = Configuration.GetSection("MongoDb:ConnectionString").Value;
+                    o.MongoDbDatabaseName = Configuration.GetSection("MongoDb:Database").Value;    
                 });
             
             services.AddMvcCore(o =>

@@ -26,6 +26,7 @@ nuget.exe
 .idea/
 .env
 .certs/
+.mongo/
 project.lock.json
 bower_components/
 node_modules/

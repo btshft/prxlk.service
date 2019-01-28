@@ -4,7 +4,10 @@ namespace Prxlk.Application.Options
 {
     public class ProxyCoreOptions
     {   
-        public string ConnectionString { get; set; }
+        public string MssqlConnectionString { get; set; }
+        
+        public string MongoDbConnectionString { get; set; }
+        public string MongoDbDatabaseName { get; set; }
         
         public ProxyInterval[] Intervals { get; set; }
         

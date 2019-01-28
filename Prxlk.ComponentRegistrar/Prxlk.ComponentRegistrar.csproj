@@ -13,6 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Prxlk.Application\Prxlk.Application.csproj" />
       <ProjectReference Include="..\Prxlk.Data.EntityFramework\Prxlk.Data.EntityFramework.csproj" />
+      <ProjectReference Include="..\Prxlk.Data.MongoDb\Prxlk.Data.MongoDb.csproj" />
       <ProjectReference Include="..\Prxlk.Domain\Prxlk.Domain.csproj" />
     </ItemGroup>
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Prxlk.Domain.QueryResults;
 
 namespace Prxlk.Domain.Queries
@@ -19,7 +20,7 @@ namespace Prxlk.Domain.Queries
         
         /// <inheritdoc />
         public override bool Validate(out string[] errors)
-        {
+        {      
             errors = Array.Empty<string>();
             return true;
         }

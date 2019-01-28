@@ -9,10 +9,10 @@ namespace Prxlk.Domain.DataAccess
 {
     public interface IQueryRepository<TEntity> where TEntity : GuidEntity
     {
-        IAsyncEnumerable<TEntity> WhereAsync(ISpecification<TEntity> specification, int limit, int offset);
-        IEnumerable<TEntity> Where(ISpecification<TEntity> specification, int limit, int offset);
+        IAsyncEnumerable<TEntity> WhereAsync(ISpecification<TEntity> specification, int? limit, int? offset);
+        IEnumerable<TEntity> Where(ISpecification<TEntity> specification, int? limit, int? offset);
         TEntity Get(Guid id);
         Task<TEntity> GetAsync(Guid id, CancellationToken cancellation);
-        Task<int> CountAsync(ISpecification<TEntity> specification);
+        Task<int> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellation);
     }
 }

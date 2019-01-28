@@ -10,10 +10,10 @@ namespace Prxlk.Domain.DataAccess
     public static class QueryRepositoryExtensions
     {
         public static IAsyncEnumerable<TEntity> WhereAsync<TEntity>(
-            this IQueryRepository<TEntity> repository, ISpecification<TEntity> specification, int limit) 
+            this IQueryRepository<TEntity> repository, ISpecification<TEntity> specification) 
             where TEntity : GuidEntity
         {
-            return repository.WhereAsync(specification, limit, offset: 0);
+            return repository.WhereAsync(specification, limit: null, offset: null);
         }
 
         public static Task<TEntity> GetAsync<TEntity>(this IQueryRepository<TEntity> repository, Guid id) 
@@ -25,7 +25,7 @@ namespace Prxlk.Domain.DataAccess
         public static Task<int> CountAsync<TEntity>(this IQueryRepository<TEntity> repository)
             where TEntity : GuidEntity
         {
-            return repository.CountAsync(Specification<TEntity>.True);
+            return repository.CountAsync(Specification<TEntity>.True, CancellationToken.None);
         }
     }
 }

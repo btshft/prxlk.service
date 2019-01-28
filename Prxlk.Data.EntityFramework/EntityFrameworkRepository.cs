@@ -23,15 +23,29 @@ namespace Prxlk.Data.EntityFramework
         }
 
         /// <inheritdoc />
-        public IAsyncEnumerable<TEntity> WhereAsync(ISpecification<TEntity> specification, int limit, int offset)
+        public IAsyncEnumerable<TEntity> WhereAsync(ISpecification<TEntity> specification, int? limit, int? offset)
         {
-            return _dbSet.Where(specification.AsExpression()).AsNoTracking().ToAsyncEnumerable();
+            var query = _dbSet.Where(specification.AsExpression());
+            if (offset.HasValue)
+                query = query.Skip(offset.Value);
+
+            if (limit.HasValue)
+                query = query.Take(limit.Value);
+            
+            return query.AsNoTracking().ToAsyncEnumerable();
         }
 
         /// <inheritdoc />
-        public IEnumerable<TEntity> Where(ISpecification<TEntity> specification, int limit, int offset)
+        public IEnumerable<TEntity> Where(ISpecification<TEntity> specification, int? limit, int? offset)
         {
-            return _dbSet.Where(specification.AsExpression()).AsNoTracking().AsEnumerable();
+            var query = _dbSet.Where(specification.AsExpression());
+            if (offset.HasValue)
+                query = query.Skip(offset.Value);
+
+            if (limit.HasValue)
+                query = query.Take(limit.Value);
+            
+            return query.AsNoTracking().AsEnumerable();
         }
 
         /// <inheritdoc />
@@ -47,9 +61,9 @@ namespace Prxlk.Data.EntityFramework
         }
 
         /// <inheritdoc />
-        public Task<int> CountAsync(ISpecification<TEntity> specification)
+        public Task<int> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellation)
         {
-            return _dbSet.CountAsync(specification.AsExpression());
+            return _dbSet.CountAsync(specification.AsExpression(), cancellationToken: cancellation);
         }
 
         /// <inheritdoc />

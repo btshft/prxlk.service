@@ -292,6 +292,7 @@ paket-files/
 
 .env
 .certs
+.mongo
 
 # CodeRush
 .cr/
