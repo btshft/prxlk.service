@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Prxlk.Application.Features.ProxyParse;
+using Prxlk.Application.Features.ProxyParse.Strategies;
 using Prxlk.Application.Features.ProxyReturn;
 using Prxlk.Application.Shared.Behaviors;
 using Prxlk.Application.Shared.Options;
@@ -30,7 +31,7 @@ namespace Prxlk.ComponentRegistrar
         {
             services.AddSingleton(p =>
             {
-                var options = p.GetRequiredService<IOptions<ProxyCoreOptions>>();
+                var options = p.GetRequiredService<IOptions<ServiceOptions>>();
                 return new MongoInternalsProvider(options.Value.MongoDbConnectionString,
                     options.Value.MongoDbDatabaseName);
             });
@@ -41,6 +42,9 @@ namespace Prxlk.ComponentRegistrar
             
             services.AddScoped(typeof(IQueryRepository<>), typeof(MongoRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>));
+
+            services.AddSingleton<IProxyParseStrategyProvider, ProxyParseStrategyProvider>();
+            services.AddSingleton<IProxyParseStrategy, SslProxyParseStrategy>();
         }
     }
 }

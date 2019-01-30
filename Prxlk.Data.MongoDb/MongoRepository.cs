@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using Prxlk.Domain.DataAccess;
+using Prxlk.Domain.DataAccess.QueryFold;
 using Prxlk.Domain.DataAccess.QueryTransform;
 using Prxlk.Domain.Models;
 
@@ -31,10 +32,9 @@ namespace Prxlk.Data.MongoDb
         }
 
         /// <inheritdoc />
-        public async Task<Guid> AddAsync(TEntity entity, CancellationToken cancellation)
+        public async Task AddAsync(TEntity entity, CancellationToken cancellation)
         {
             await _collection.InsertOneAsync(entity, cancellationToken: cancellation);
-            return entity.Id;
         }
 
         /// <inheritdoc />
@@ -62,19 +62,25 @@ namespace Prxlk.Data.MongoDb
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<TOut> Query<TOut>(QueryTransform<TEntity, TOut> transform) 
+        public IReadOnlyCollection<TOut> Query<TOut>(IQueryTransform<TEntity, TOut> transform) 
             where TOut : class
         {
             return transform.Transform(_collection.AsQueryable()).ToArray();
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyCollection<TOut>> QueryAsync<TOut>(QueryTransform<TEntity, TOut> transform) 
+        public async Task<IReadOnlyCollection<TOut>> QueryAsync<TOut>(IQueryTransform<TEntity, TOut> transform) 
             where TOut : class
         {
             return await transform.Transform(_collection.AsQueryable())
                 .ToAsyncEnumerable()
                 .ToArray();
+        }
+
+        /// <inheritdoc />
+        public TOut QueryFold<TOut>(IQueryFold<TEntity, TOut> fold)
+        {
+            return fold.FoldQuery(_collection.AsQueryable());
         }
     }
 }

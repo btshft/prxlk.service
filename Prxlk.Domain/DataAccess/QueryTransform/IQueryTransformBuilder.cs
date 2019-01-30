@@ -1,16 +1,16 @@
 namespace Prxlk.Domain.DataAccess.QueryTransform
 {
-    public interface IQueryTransformBuilder<TIn, TOut> 
+    public interface IQueryTransformBuilder<in TIn, out TOut> 
         where TIn : class
         where TOut : class
     {
-        QueryTransform<TIn, TOut> CreateQueryTransform();
+        IQueryTransform<TIn, TOut> CreateQueryTransform();
     }
     
-    public interface IQueryTransformBuilder<TIn, TOut, in TArg> 
+    public interface IQueryTransformBuilder<in TIn, out TOut, in TArg> 
         where TIn : class
         where TOut : class
     {
-        QueryTransform<TIn, TOut> CreateQueryTransform(TArg arg);
+        IQueryTransform<TIn, TOut> CreateQueryTransform(TArg arg);
     }
 }

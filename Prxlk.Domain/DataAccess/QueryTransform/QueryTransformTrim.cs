@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Prxlk.Domain.DataAccess.QueryTransform
 {   
-    internal class QueryTransformTrim<T> : QueryTransform<T, T> 
+    internal class QueryTransformTrim<T> : IQueryTransform<T, T> 
         where T : class
     {
         private readonly int? _take;
@@ -17,7 +17,7 @@ namespace Prxlk.Domain.DataAccess.QueryTransform
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal override IQueryable<T> TransformInternal(IQueryable<T> queryable)
+        public IQueryable<T> Transform(IQueryable<T> queryable)
         {
             if (_skip.HasValue && _skip > 0)
                 queryable = queryable.Skip(_skip.Value);

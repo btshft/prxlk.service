@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -18,18 +19,23 @@ namespace Prxlk.Application.Shared.Behaviors
         /// <inheritdoc />
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if (request is Command)
+            if (!(request is Command)) 
+                return await next();
+            
+            using (var session = _sessionFactory.CreateSession())
             {
-                using (var session = _sessionFactory.CreateSession())
+                try
                 {
                     var result = await next();
                     await session.CommitAsync(cancellationToken);
-
                     return result;
                 }
+                catch (Exception e)
+                {
+                    await session.RollbackAsync(cancellationToken);
+                    throw;
+                }
             }
-
-            return await next();
         }
     }
 }

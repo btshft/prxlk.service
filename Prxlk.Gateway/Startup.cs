@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Prxlk.Application.Shared.Options;
 using Prxlk.ComponentRegistrar;
 using Prxlk.Gateway.BackgroundServices;
+using Prxlk.Gateway.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Prxlk.Gateway
@@ -26,10 +27,9 @@ namespace Prxlk.Gateway
         {
             services
                 .AddOptions()
-                .Configure<ProxyCoreOptions>(o =>
+                .Configure<ServiceOptions>(o =>
                 {
-                    Configuration.GetSection("Core").Bind(o);
-                    o.MssqlConnectionString = Configuration.GetConnectionString("DefaultConnection");
+                    Configuration.GetSection("Settings").Bind(o);
                     o.MongoDbConnectionString = Configuration.GetSection("MongoDb:ConnectionString").Value;
                     o.MongoDbDatabaseName = Configuration.GetSection("MongoDb:Database").Value;    
                 });
@@ -59,6 +59,9 @@ namespace Prxlk.Gateway
 
             // Bg services
             services.AddHostedService<ProxyBackgroundService>();
+            
+            //
+            services.AddSingleton(typeof(IScopedServiceFactory<>), typeof(ScopedServiceFactory<>));
             
             ApplicationRegistrar.ConfigureServices(services);
         }

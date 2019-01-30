@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Prxlk.Application.Features.ProxyParse;
+using Prxlk.Application.Features.ProxyParse.Strategies;
 using Prxlk.Application.Shared.Options;
 using Prxlk.Contracts;
+using Prxlk.Gateway.DependencyInjection;
 
 namespace Prxlk.Gateway.BackgroundServices
 {
@@ -15,29 +19,36 @@ namespace Prxlk.Gateway.BackgroundServices
     {
         private readonly ILogger _logger;
         private readonly List<Timer> _refreshProxyTimers;
-        private readonly ProxyCoreOptions _options;
+        private readonly ServiceOptions _options;
+        private readonly IProxyParseStrategyProvider _parseStrategyProvider;
+
+        private readonly IScopedServiceFactory<IMediator> _mediatorFactory;
 
         public ProxyBackgroundService(
-            IOptions<ProxyCoreOptions> options, 
-            ILogger<ProxyBackgroundService> logger)
+            IOptions<ServiceOptions> options, 
+            ILogger<ProxyBackgroundService> logger, 
+            IProxyParseStrategyProvider parseStrategyProvider, 
+            IScopedServiceFactory<IMediator> mediatorFactory)
         {
             _options = options.Value;
             _logger = logger;
+            _parseStrategyProvider = parseStrategyProvider;
+            _mediatorFactory = mediatorFactory;
             _refreshProxyTimers = new List<Timer>();
         }
         
         /// <inheritdoc />
-        public Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellation)
         {
             _logger.LogInformation("Refresh service is starting");
             
-            StartTimers();
+            StartTimers(cancellation);
             
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public Task StopAsync(CancellationToken cancellationToken)
+        public Task StopAsync(CancellationToken cancellation)
         {
             _logger.LogInformation("Refresh service is stopping");
             
@@ -58,26 +69,40 @@ namespace Prxlk.Gateway.BackgroundServices
             }
         }
 
-        private void StartTimers()
+        private void StartTimers(CancellationToken cancellation)
         {
             foreach (var proxySource in Enum.GetValues(typeof(ProxySource)).Cast<ProxySource>())
             {
                 if (proxySource == ProxySource.Undefined)
                     continue;
 
-                var interval = _options.Intervals.FirstOrDefault(i =>
-                    string.Equals(i.Name, proxySource.ToString(), StringComparison.InvariantCultureIgnoreCase));
-
-                if (interval == null) 
-                    continue;
-                
+                var sourceOptions = _options.GetSource(proxySource);
                 var currentProxySource = proxySource;
                 
-                _refreshProxyTimers.Add(CreateTimer(_ =>
+                _refreshProxyTimers.Add(CreateTimer(async _ =>
                 {
-                    // TODO
+                    try
+                    {
+                        // TODO
+                        var strategy = _parseStrategyProvider.GetStrategy(currentProxySource);
+                        var proxies = await strategy.ParseAsync(new ProxyParseRequest(), cancellation);
 
-                }, interval.Interval));
+                        using (var scope = _mediatorFactory.CreateScope())
+                        {
+                            var mediator = scope.GetService();
+                            foreach (var proxy in proxies)
+                            {
+                                await mediator.Send(new ProxyInsertCommand(
+                                    proxy.Ip, proxy.Port, proxy.Protocol, proxy.Country), cancellation);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // Log
+                    }
+
+                }, sourceOptions.Refresh, TimeSpan.FromSeconds(1)));
             }
         }
 
@@ -89,7 +114,7 @@ namespace Prxlk.Gateway.BackgroundServices
             }
         }
         
-        private static Timer CreateTimer(TimerCallback callback, TimeSpan period)
+        private static Timer CreateTimer(TimerCallback callback, TimeSpan period, TimeSpan delay)
         {
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
@@ -99,12 +124,12 @@ namespace Prxlk.Gateway.BackgroundServices
             try
             {
                 if (ExecutionContext.IsFlowSuppressed()) 
-                    return new Timer(callback, null, TimeSpan.Zero, period);
+                    return new Timer(callback, null, delay, period);
                 
                 ExecutionContext.SuppressFlow();
                 restoreFlow = true;
 
-                return new Timer(callback, null, TimeSpan.Zero, period);
+                return new Timer(callback, null, delay, period);
             }
             finally
             {

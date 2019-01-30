@@ -1,6 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Prxlk.Application.Shared.Extensions;
 using Prxlk.Application.Shared.Handlers;
 using Prxlk.Contracts;
 using Prxlk.Domain.DataAccess;
@@ -32,7 +34,7 @@ namespace Prxlk.Application.Features.ProxyReturn
         }
 
         /// <inheritdoc />
-        public QueryTransform<Proxy, ProxyTransportModel> CreateQueryTransform(GetProxiesQuery query)
+        public IQueryTransform<Proxy, ProxyTransportModel> CreateQueryTransform(GetProxiesQuery query)
         {
             var transform = QueryTransformPipeline<Proxy>.Create()
                 .Filter(_ => true) // TODO
@@ -41,7 +43,9 @@ namespace Prxlk.Application.Features.ProxyReturn
             if (query.Offset.HasValue)
                 transform = transform.Skip(query.Offset.Value);
 
-            return transform.Project(p => _mapper.Map<ProxyTransportModel>(p)); 
+            var projection = _mapper.GetProjection<Proxy, ProxyTransportModel>();
+            
+            return transform.Project(projection); 
         }
     }
 }

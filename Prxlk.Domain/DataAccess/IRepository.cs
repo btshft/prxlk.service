@@ -5,10 +5,11 @@ using Prxlk.Domain.Models;
 
 namespace Prxlk.Domain.DataAccess
 {
-    public interface IRepository<in TEntity> where TEntity : Entity
+    public interface IRepository<TEntity> : IQueryRepository<TEntity> 
+        where TEntity : Entity
     {
         Guid Add(TEntity entity);
-        Task<Guid> AddAsync(TEntity entity, CancellationToken cancellation);
+        Task AddAsync(TEntity entity, CancellationToken cancellation);
         void Update(TEntity entity);
         Task UpdateAsync(TEntity entity, CancellationToken cancellation);
         void Remove(Guid id);

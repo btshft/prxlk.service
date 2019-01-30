@@ -1,9 +1,12 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Prxlk.Application.Shared.Handlers;
 using Prxlk.Domain.DataAccess;
+using Prxlk.Domain.DataAccess.QueryFold;
+using Prxlk.Domain.DataAccess.QueryTransform;
 using Prxlk.Domain.Models;
 
 namespace Prxlk.Application.Features.ProxyParse
@@ -22,8 +25,17 @@ namespace Prxlk.Application.Features.ProxyParse
         /// <inheritdoc />
         public async Task<Unit> Handle(ProxyInsertCommand request, CancellationToken cancellationToken)
         {
+            var fold = QueryFoldPipeline.Create<Proxy>()
+                .Compose(source => source
+                    .FirstOrDefault(p => p.Ip == request.Ip && p.Port == request.Port));
+                    
+            var existingProxy = _proxyRepository.QueryFold(fold);
+            if (existingProxy != null)
+                return Unit.Value;
+            
             var proxy = _mapper.Map<Proxy>(request);
-            var proxyId = await _proxyRepository.AddAsync(proxy, cancellationToken);
+            
+            await _proxyRepository.AddAsync(proxy, cancellationToken);
             
             // Event can be sent there
             return Unit.Value;

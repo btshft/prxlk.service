@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Prxlk.Domain.DataAccess.QueryTransform
 {
-    internal class QueryTransformProject<TIn, TOut> : QueryTransform<TIn, TOut> 
+    internal class QueryTransformProject<TIn, TOut> : IQueryTransform<TIn, TOut> 
         where TIn : class where TOut : class
     {
         private readonly Expression<Func<TIn, TOut>> _projection;
@@ -17,10 +17,8 @@ namespace Prxlk.Domain.DataAccess.QueryTransform
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal override IQueryable<TOut> TransformInternal(IQueryable<TIn> queryable)
+        public IQueryable<TOut> Transform(IQueryable<TIn> queryable)
         {
-            // TODO: Expand projection
-            // https://benjii.me/2018/01/expression-projection-magic-entity-framework-core/
             return queryable.Select(_projection);
         }
     }

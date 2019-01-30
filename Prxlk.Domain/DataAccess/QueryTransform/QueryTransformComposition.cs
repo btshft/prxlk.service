@@ -3,15 +3,15 @@ using System.Runtime.CompilerServices;
 
 namespace Prxlk.Domain.DataAccess.QueryTransform
 {
-    internal class QueryTransformComposition<TIn, TOut, TResult> : QueryTransform<TIn, TResult> 
+    internal class QueryTransformComposition<TIn, TOut, TResult> : IQueryTransform<TIn, TResult> 
         where TIn : class 
         where TResult : class
         where TOut : class
     {
-        private readonly QueryTransform<TIn, TOut> _inner;
-        private readonly QueryTransform<TOut, TResult> _outer;
+        private readonly IQueryTransform<TIn, TOut> _inner;
+        private readonly IQueryTransform<TOut, TResult> _outer;
 
-        internal QueryTransformComposition(QueryTransform<TIn, TOut> inner, QueryTransform<TOut, TResult> outer)
+        internal QueryTransformComposition(IQueryTransform<TIn, TOut> inner, IQueryTransform<TOut, TResult> outer)
         {
             _inner = inner;
             _outer = outer;
@@ -19,7 +19,7 @@ namespace Prxlk.Domain.DataAccess.QueryTransform
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal override IQueryable<TResult> TransformInternal(IQueryable<TIn> queryable)
+        public IQueryable<TResult> Transform(IQueryable<TIn> queryable)
         {
             return _outer.Transform(_inner.Transform(queryable));
         }
