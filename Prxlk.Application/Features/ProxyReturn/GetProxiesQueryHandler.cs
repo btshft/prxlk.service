@@ -25,7 +25,7 @@ namespace Prxlk.Application.Features.ProxyReturn
         /// <inheritdoc />
         public async Task<ProxyEnvelope> Handle(GetProxiesQuery request, CancellationToken cancellationToken)
         {
-            var proxies = await _proxyRepository.QueryTransformAsync(
+            var proxies = await _proxyRepository.QueryAsync(
                 CreateQueryTransform(request));
 
             return new ProxyEnvelope { Proxies = proxies };

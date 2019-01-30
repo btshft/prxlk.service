@@ -7,10 +7,10 @@ namespace Prxlk.Domain.DataAccess
 {
     public interface IQueryRepository<TEntity> where TEntity : Entity
     {
-        IReadOnlyCollection<TOut> QueryTransform<TOut>(QueryTransform<TEntity, TOut> transform) 
+        IReadOnlyCollection<TOut> Query<TOut>(QueryTransform<TEntity, TOut> transform) 
             where TOut : class;
 
-        Task<IReadOnlyCollection<TOut>> QueryTransformAsync<TOut>(QueryTransform<TEntity, TOut> transform) 
+        Task<IReadOnlyCollection<TOut>> QueryAsync<TOut>(QueryTransform<TEntity, TOut> transform) 
             where TOut : class;
     }
 }

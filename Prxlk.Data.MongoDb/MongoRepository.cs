@@ -62,14 +62,14 @@ namespace Prxlk.Data.MongoDb
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<TOut> QueryTransform<TOut>(QueryTransform<TEntity, TOut> transform) 
+        public IReadOnlyCollection<TOut> Query<TOut>(QueryTransform<TEntity, TOut> transform) 
             where TOut : class
         {
             return transform.Transform(_collection.AsQueryable()).ToArray();
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyCollection<TOut>> QueryTransformAsync<TOut>(QueryTransform<TEntity, TOut> transform) 
+        public async Task<IReadOnlyCollection<TOut>> QueryAsync<TOut>(QueryTransform<TEntity, TOut> transform) 
             where TOut : class
         {
             return await transform.Transform(_collection.AsQueryable())
