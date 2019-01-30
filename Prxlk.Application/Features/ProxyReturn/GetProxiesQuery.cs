@@ -1,0 +1,17 @@
+using Prxlk.Application.Shared.Messages;
+using Prxlk.Contracts;
+
+namespace Prxlk.Application.Features.ProxyReturn
+{
+    public class GetProxiesQuery : Query<ProxyEnvelope>
+    {
+        public int Limit { get; }
+        public int? Offset { get; }
+        
+        public GetProxiesQuery(int limit, int? offset)
+        {
+            Limit = limit;
+            Offset = offset;
+        }
+    }
+}

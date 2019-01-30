@@ -1,15 +1,15 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Prxlk.Contracts
 {
     public class ProxyEnvelope
     {
-        public IReadOnlyCollection<ProxyTransportModel> Proxies { get; }
+        public IReadOnlyCollection<ProxyTransportModel> Proxies { get; set; }
         
-        public ProxyEnvelope(IEnumerable<ProxyTransportModel> proxies)
+        public ProxyEnvelope()
         {
-            Proxies = proxies.ToArray();
+            Proxies = Array.Empty<ProxyTransportModel>();
         }
     }
 }

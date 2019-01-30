@@ -1,7 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Prxlk.Application.Services;
+using Prxlk.Application.Features.ProxyParse;
+using Prxlk.Application.Features.ProxyReturn;
+using Prxlk.Application.Shared.Handlers;
 using Prxlk.Contracts;
 
 namespace Prxlk.Gateway.Controllers
@@ -10,22 +13,22 @@ namespace Prxlk.Gateway.Controllers
     [ApiController, ApiVersion("1.0")]
     public class ProxyController : ControllerBase
     {
-        private readonly IProxyService _proxyService;
+        private readonly IMediator _mediator;
 
-        public ProxyController(IProxyService proxyService)
+        public ProxyController(IMediator mediator)
         {
-            _proxyService = proxyService;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(ProxyEnvelope), statusCode: 200)]
         [Produces("application/json")]
-        public async Task<IActionResult> GetProxies([FromQuery] ProxyRequest request)
+        public async Task<IActionResult> GetProxies([FromQuery] GetProxyRequest request)
         {
-            var result = await _proxyService.GetProxiesAsync(request, CancellationToken.None)
-                .ConfigureAwait(continueOnCapturedContext: false);
+            var query = new GetProxiesQuery(request.Count, request.Offset);
+            var envelope = await _mediator.Send(query);
             
-            return Ok(result);
+            return Ok(envelope);
         }
     }
 }

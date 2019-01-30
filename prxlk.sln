@@ -12,8 +12,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prxlk.ComponentRegistrar", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prxlk.Shared", "Prxlk.Shared\Prxlk.Shared.csproj", "{46AA2D29-98D7-4BAD-8C1A-EC24CAA01025}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prxlk.Data.EntityFramework", "Prxlk.Data.EntityFramework\Prxlk.Data.EntityFramework.csproj", "{1EC57842-5F3D-428C-9591-1C9E9DF1D3BD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prxlk.Data.MongoDb", "Prxlk.Data.MongoDb\Prxlk.Data.MongoDb.csproj", "{6910D213-62EC-474E-A2D5-C87A4307B907}"
 EndProject
 Global
@@ -46,10 +44,6 @@ Global
 		{46AA2D29-98D7-4BAD-8C1A-EC24CAA01025}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46AA2D29-98D7-4BAD-8C1A-EC24CAA01025}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46AA2D29-98D7-4BAD-8C1A-EC24CAA01025}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1EC57842-5F3D-428C-9591-1C9E9DF1D3BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1EC57842-5F3D-428C-9591-1C9E9DF1D3BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1EC57842-5F3D-428C-9591-1C9E9DF1D3BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1EC57842-5F3D-428C-9591-1C9E9DF1D3BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6910D213-62EC-474E-A2D5-C87A4307B907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6910D213-62EC-474E-A2D5-C87A4307B907}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6910D213-62EC-474E-A2D5-C87A4307B907}.Release|Any CPU.ActiveCfg = Release|Any CPU

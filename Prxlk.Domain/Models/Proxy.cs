@@ -2,7 +2,7 @@ using System;
 
 namespace Prxlk.Domain.Models
 {
-    public class Proxy : GuidEntity
+    public class Proxy : Entity<Guid>
     {
         public string Ip { get; protected set; }
         public int Port { get; protected set; }

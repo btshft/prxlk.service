@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Prxlk.Application.Options;
-using Prxlk.Application.ParseStrategies;
+using Prxlk.Application.Shared.Options;
 using Prxlk.Contracts;
 
 namespace Prxlk.Gateway.BackgroundServices
@@ -17,13 +16,13 @@ namespace Prxlk.Gateway.BackgroundServices
         private readonly ILogger _logger;
         private readonly List<Timer> _refreshProxyTimers;
         private readonly ProxyCoreOptions _options;
-        private readonly IExternalProxyProviderFactory _providerFactory;
 
-        public ProxyBackgroundService(IOptions<ProxyCoreOptions> options, ILogger<ProxyBackgroundService> logger, IExternalProxyProviderFactory providerFactory)
+        public ProxyBackgroundService(
+            IOptions<ProxyCoreOptions> options, 
+            ILogger<ProxyBackgroundService> logger)
         {
             _options = options.Value;
             _logger = logger;
-            _providerFactory = providerFactory;
             _refreshProxyTimers = new List<Timer>();
         }
         
@@ -73,11 +72,9 @@ namespace Prxlk.Gateway.BackgroundServices
                     continue;
                 
                 var currentProxySource = proxySource;
+                
                 _refreshProxyTimers.Add(CreateTimer(_ =>
                 {
-                    var proxyProvider = _providerFactory.GetProvider(currentProxySource);
-                    var proxies = proxyProvider.GetProxies(maxCount: 100);
-                        
                     // TODO
 
                 }, interval.Interval));

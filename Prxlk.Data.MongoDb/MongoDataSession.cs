@@ -1,5 +1,3 @@
-using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
@@ -14,6 +12,7 @@ namespace Prxlk.Data.MongoDb
         public MongoDataSession(IMongoClientProvider provider)
         {
             _session = provider.GetClient().StartSession();
+            _session.StartTransaction();
         }
         
         /// <inheritdoc />

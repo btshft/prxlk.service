@@ -1,12 +1,10 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Prxlk.Application.Options;
+using Prxlk.Application.Shared.Options;
 using Prxlk.ComponentRegistrar;
 using Prxlk.Gateway.BackgroundServices;
 using Swashbuckle.AspNetCore.Swagger;

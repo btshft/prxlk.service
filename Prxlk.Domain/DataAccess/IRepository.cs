@@ -5,7 +5,7 @@ using Prxlk.Domain.Models;
 
 namespace Prxlk.Domain.DataAccess
 {
-    public interface IRepository<in TEntity> where TEntity : GuidEntity
+    public interface IRepository<in TEntity> where TEntity : Entity
     {
         Guid Add(TEntity entity);
         Task<Guid> AddAsync(TEntity entity, CancellationToken cancellation);

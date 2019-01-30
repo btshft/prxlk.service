@@ -1,6 +1,5 @@
 FROM microsoft/dotnet:aspnetcore-runtime as base
 WORKDIR /app
-EXPOSE 443
 
 FROM microsoft/dotnet:sdk AS build
 WORKDIR /src
