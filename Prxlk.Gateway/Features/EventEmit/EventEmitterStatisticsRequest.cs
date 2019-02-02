@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Prxlk.Gateway.BackgroundServices
+namespace Prxlk.Gateway.Features.EventEmit
 {
     public class EventEmitterStatisticsRequest : IRequest<EventEmitterStatistics>
     { }

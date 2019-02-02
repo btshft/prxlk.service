@@ -15,7 +15,7 @@ using Prxlk.Contracts;
 using Prxlk.Gateway.Features.Diagnostics;
 using Prxlk.Shared.Expressions;
 
-namespace Prxlk.Gateway.BackgroundServices
+namespace Prxlk.Gateway.Features.EventEmit
 {
     public class EventEmitService : IHostedService, IEventEmitter
     {

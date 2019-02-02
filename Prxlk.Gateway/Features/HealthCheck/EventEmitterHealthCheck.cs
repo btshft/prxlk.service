@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Prxlk.Application.Shared.DependencyInjection;
-using Prxlk.Gateway.BackgroundServices;
+using Prxlk.Gateway.Features.EventEmit;
 
 namespace Prxlk.Gateway.Features.HealthCheck
 {

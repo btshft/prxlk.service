@@ -4,12 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Prxlk.Application.Features.ProxyReturn;
 using Prxlk.Application.Shared.DependencyInjection;
 using Prxlk.Application.Shared.Options;
 using Prxlk.ComponentRegistrar;
-using Prxlk.Gateway.BackgroundServices;
 using Prxlk.Gateway.Features;
 using Serilog;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -18,8 +16,8 @@ namespace Prxlk.Gateway
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; set; }
-        public IHostingEnvironment Environment { get; set; }
+        public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
         
         public Startup(IHostingEnvironment environment, IConfiguration configuration)
         {
@@ -43,15 +41,9 @@ namespace Prxlk.Gateway
                     o.MongoDbDatabaseName = Configuration.GetSection("MongoDb:Database").Value;    
                 });
  
-            // Bg services
-            services.AddSingleton<EventEmitService>();
-            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<EventEmitService>());
- 
             // Mediatr
             services.AddMediatR(typeof(GetProxiesQueryHandler));
-            services.AddScoped<IRequestHandler<EventEmitterStatisticsRequest, EventEmitterStatistics>>(
-                sp => sp.GetRequiredService<EventEmitService>());
-            
+
             // Core components
             services.AddSingleton(typeof(IScopedServiceFactory<>), typeof(ScopedServiceFactory<>));     
             ApplicationRegistrar.ConfigureServices(services);

@@ -20,13 +20,17 @@ namespace Prxlk.Gateway.Features.HealthCheck
         /// <inheritdoc />
         public override void RegisterFeature(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddHealthChecks()
+            var healthChecksBuilder = services.AddHealthChecks()
                 .Add(new HealthCheckRegistration("mongo", sp =>
                         new MongoHealthCheck(sp.GetRequiredService<IMongoDatabaseProvider>()),
-                    null, null))
-                .Add(new HealthCheckRegistration("emitter", sp =>
+                    null, null));
+
+            if (configuration.IsFeatureEnabled("EventEmit"))
+            {
+                healthChecksBuilder.Add(new HealthCheckRegistration("event_emitter", sp =>
                         new EventEmitterHealthCheck(sp.GetRequiredService<IScopedServiceFactory<IMediator>>()),
                     null, null));
+            }
         }
 
         /// <inheritdoc />

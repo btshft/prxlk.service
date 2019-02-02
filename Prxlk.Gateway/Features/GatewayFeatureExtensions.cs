@@ -55,5 +55,14 @@ namespace Prxlk.Gateway.Features
 
             return builder;
         }
+
+        public static bool IsFeatureEnabled(this IConfiguration configuration, string name)
+        {
+            var enabledFeatures = configuration
+                .GetSection("Settings:Features")
+                .Get<string[]>();
+
+            return enabledFeatures.Any(f => f == name);
+        }
     }
 }

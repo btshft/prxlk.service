@@ -1,6 +1,6 @@
 using System;
 
-namespace Prxlk.Gateway.BackgroundServices
+namespace Prxlk.Gateway.Features.EventEmit
 {
     public class EventEmitterStatistics
     {

@@ -3,7 +3,7 @@ using System.Threading;
 using MediatR;
 using Prxlk.Application.Shared.Messages;
 
-namespace Prxlk.Gateway.BackgroundServices
+namespace Prxlk.Gateway.Features.EventEmit
 {
     public interface IEventEmitter: IRequestHandler<EventEmitterStatisticsRequest, EventEmitterStatistics>
     {
