@@ -43,8 +43,8 @@ namespace Prxlk.ComponentRegistrar
             services.AddScoped(typeof(IQueryRepository<>), typeof(MongoRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>));
 
-            services.AddSingleton<IProxyParseStrategyProvider, ProxyParseStrategyProvider>();
-            services.AddSingleton<IProxyParseStrategy, SslProxyParseStrategy>();
+            services.AddScoped<IProxyParseStrategyProvider, ProxyParseStrategyProvider>();
+            services.AddScoped<IProxyParseStrategy, SslProxyParseStrategy>();
         }
     }
 }

@@ -27,6 +27,9 @@ namespace Prxlk.Application.Features.ProxyParse
 
             do
             {
+                if (proxy == null)
+                    return Unit.Value;
+                
                 await _mediator.Publish(new ProxyParsed(request.CorrelationId, proxy), cancellationToken);
                 proxy = await strategy.GetNextAsync(cancellationToken);
                 
