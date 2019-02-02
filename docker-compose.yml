@@ -9,7 +9,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
     ports:
-      - 5049:80
+      - 127.0.0.1:5049:80
     networks:
       - main-network
     depends_on:
@@ -21,7 +21,7 @@ services:
     volumes:
       - ./.mongo:/data/db
     ports:
-      - 27017:27017
+      - 127.0.0.1:27017:27017
     networks:
       - main-network
   dashboard:
@@ -30,7 +30,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
     ports:
-      - 5341:80
+      - 127.0.0.1:5341:80
     volumes:
       - ./.seq:/data
 networks:
