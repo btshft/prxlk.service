@@ -1,17 +1,17 @@
 using System;
 using Microsoft.Extensions.DiagnosticAdapter;
-using Microsoft.Extensions.Logging;
 using Prxlk.Application.Shared.Messages;
+using Serilog;
 
 namespace Prxlk.Gateway.Features.Diagnostics
 {
     public class EventEmitterDiagnosticObserver : DiagnosticObserver
     {
-        private readonly ILogger<EventEmitterDiagnosticObserver> _logger;
+        private readonly ILogger _logger;
 
-        public EventEmitterDiagnosticObserver(ILogger<EventEmitterDiagnosticObserver> logger)
+        public EventEmitterDiagnosticObserver()
         {
-            _logger = logger;
+            _logger = Log.ForContext<EventEmitterDiagnosticObserver>();
         }
 
         protected override bool IsMatch(string listenerName)
@@ -22,15 +22,20 @@ namespace Prxlk.Gateway.Features.Diagnostics
         [DiagnosticName(EventEmitterDiagnostic.EmitExceptionEventName)]
         public void OnEmitException(Event @event, Exception exception)
         {
-            _logger.LogError(EventEmitterDiagnostic.EmitExceptionEventId, exception,
-                $"Event '{@event.GetType().Name}' emit failed. Correlation Id: {@event.CorrelationId}");
+            _logger
+                .ForContext("EventId",  EventEmitterDiagnostic.EmitExceptionEvent.Id)
+                .ForContext("EventName", EventEmitterDiagnostic.EmitExceptionEvent.Name)
+                .ForContext("CorrelationId", @event.CorrelationId)
+                .Error(exception, "Event emit failed {CorrelationId}");
         }
 
         [DiagnosticName(EventEmitterDiagnostic.FatalException)]
         public void OnFatalException(Exception exception)
         {
-            _logger.LogError(EventEmitterDiagnostic.FatalExceptionEventId, exception,
-                "Event emitter fatal exception");
+            _logger
+                .ForContext("EventId",  EventEmitterDiagnostic.FatalExceptionEvent.Id)
+                .ForContext("EventName", EventEmitterDiagnostic.FatalExceptionEvent.Name)
+                .Fatal(exception, "Fatal exception occured");
         }
     }
 }

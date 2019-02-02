@@ -1,18 +1,16 @@
-using System;
-
 namespace Prxlk.Gateway.Models
 {
     public class ApiError
     {
         public string Message { get; }
         public string Description { get; }
-        public Guid? CorrelationId { get; }
+        public string TraceId { get; }
 
-        public ApiError(string message, string description, Guid? correlationId)
+        public ApiError(string message, string description, string traceId)
         {
             Message = message;
             Description = description;
-            CorrelationId = correlationId;
+            TraceId = traceId;
         }
     }
 }

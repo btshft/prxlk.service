@@ -24,9 +24,11 @@ namespace Prxlk.Gateway.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetProxies([FromQuery] GetProxyRequest request)
         {
+            throw new Exception();
+            
             var query = new GetProxiesQuery(request.Count, request.Offset);
             var envelope = await _mediator.Send(query);
-            
+
             return Ok(envelope);
         }
     }

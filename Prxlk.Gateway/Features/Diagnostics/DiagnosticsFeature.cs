@@ -4,13 +4,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Prxlk.Gateway.Features.Diagnostics
 {
-    [GatewayFeature("Diagnostics")]
+    [GatewayFeature("Diagnostics", order: 1)]
     public class DiagnosticsFeature : GatewayFeature
     {
         /// <inheritdoc />
         public override void RegisterFeature(IServiceCollection services, IConfiguration configuration)
         {
             services.AddDiagnosticObserver<EventEmitterDiagnosticObserver>();
+            services.AddDiagnosticObserver<GatewayDiagnosticObserver>();
         }
 
         /// <inheritdoc />

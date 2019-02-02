@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Prxlk.Gateway.Features.ApiKeyAuthentication
 {
-    [GatewayFeature("ApiKeyAuthentication")]
+    [GatewayFeature("ApiKeyAuthentication", order: 2)]
     public class ApiKeyAuthenticationFeature : GatewayFeature
     {
         /// <inheritdoc />

@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Prxlk.Application.Features.ProxyReturn;
 using Prxlk.Application.Shared.DependencyInjection;
@@ -59,15 +58,29 @@ namespace Prxlk.Gateway
             
             // Features
             services.AddFeatures(Configuration);
+            
+            // Api options
+            services.Configure<ApiBehaviorOptions>(o =>
+            {
+                o.InvalidModelStateResponseFactory = context =>
+                {
+                    var problemDetails = new ValidationProblemDetails(context.ModelState)
+                    {
+                        Instance = context.HttpContext.Request.Path,
+                        Status = StatusCodes.Status400BadRequest,
+                        Type = "about:blank",
+                        Detail = "Please refer to the errors property for additional details."
+                    };
+                    return new BadRequestObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json", "application/problem+xml" }
+                    };
+                };
+            });
         }
 
         public void Configure(IApplicationBuilder app)
         {
-            if (Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            
             // Features
             app.UseFeatures(Configuration);
         }

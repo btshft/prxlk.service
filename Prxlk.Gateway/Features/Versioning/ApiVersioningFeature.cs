@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Prxlk.Gateway.Features.Versioning
 {
-    [GatewayFeature("ApiVersioning")]
+    [GatewayFeature("ApiVersioning", order: 2)]
     public class ApiVersioningFeature : GatewayFeature
     {
         /// <inheritdoc />
@@ -13,6 +14,8 @@ namespace Prxlk.Gateway.Features.Versioning
             services.AddApiVersioning(o =>
             {
                 o.AssumeDefaultVersionWhenUnspecified = true;
+                o.ReportApiVersions = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
             });
         }
 

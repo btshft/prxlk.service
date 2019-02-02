@@ -5,7 +5,7 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace Prxlk.Gateway.Features.Swagger
 {
-    [GatewayFeature("Swagger")]
+    [GatewayFeature("Swagger", order: 2)]
     public class SwaggerFeature : GatewayFeature
     {
         /// <inheritdoc />

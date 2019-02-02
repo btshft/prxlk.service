@@ -8,7 +8,7 @@ namespace Prxlk.Gateway.Features.Diagnostics
         public const string EmitExceptionEventName = "Emit.Exception";
         public const string FatalException = "FatalException";
         
-        public static readonly EventId EmitExceptionEventId = new EventId(130, $"{ListenerName}.{EmitExceptionEventName}");
-        public static readonly EventId FatalExceptionEventId = new EventId(131, $"{ListenerName}.{FatalException}");
+        public static readonly EventId EmitExceptionEvent = new EventId(130, $"{ListenerName}.{EmitExceptionEventName}");
+        public static readonly EventId FatalExceptionEvent = new EventId(131, $"{ListenerName}.{FatalException}");
     }
 }

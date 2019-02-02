@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Prxlk.Gateway.Features.Mvc
 {
-    [GatewayFeature("Mvc")]
+    [GatewayFeature("Mvc", order: 1)]
     public class MvcFeature : GatewayFeature
     {
         /// <inheritdoc />

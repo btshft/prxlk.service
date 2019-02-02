@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -15,7 +14,7 @@ using Prxlk.Data.MongoDb;
 
 namespace Prxlk.Gateway.Features.HealthCheck
 {
-    [GatewayFeature("HealthCheck")]
+    [GatewayFeature("HealthCheck", order: 2)]
     public class HealthCheckFeature : GatewayFeature
     {
         /// <inheritdoc />
