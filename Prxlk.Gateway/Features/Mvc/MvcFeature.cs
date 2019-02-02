@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Prxlk.Gateway.Features.Mvc
@@ -9,7 +10,7 @@ namespace Prxlk.Gateway.Features.Mvc
     public class MvcFeature : GatewayFeature
     {
         /// <inheritdoc />
-        public override void RegisterFeature(IServiceCollection services)
+        public override void RegisterFeature(IServiceCollection services, IConfiguration configuration)
         {
             services.AddMvcCore(o =>
                 {
@@ -21,7 +22,7 @@ namespace Prxlk.Gateway.Features.Mvc
         }
 
         /// <inheritdoc />
-        public override void UseFeature(IApplicationBuilder app)
+        public override void UseFeature(IApplicationBuilder app, IConfiguration configuration)
         {
             app.UseMvc();
         }

@@ -19,10 +19,18 @@ namespace Prxlk.Gateway.Features.Diagnostics
             return listenerName == EventEmitterDiagnostic.ListenerName;
         }
 
-        [DiagnosticName(EventEmitterDiagnostic.ExceptionEventName)]
-        public void OnException(Event @event, Exception exception)
+        [DiagnosticName(EventEmitterDiagnostic.EmitExceptionEventName)]
+        public void OnEmitException(Event @event, Exception exception)
         {
-            _logger.LogError(exception, $"Event '{@event.GetType().Name}' emit failed. Correlation Id: {@event.CorrelationId}");
+            _logger.LogError(EventEmitterDiagnostic.EmitExceptionEventId, exception,
+                $"Event '{@event.GetType().Name}' emit failed. Correlation Id: {@event.CorrelationId}");
+        }
+
+        [DiagnosticName(EventEmitterDiagnostic.FatalException)]
+        public void OnFatalException(Exception exception)
+        {
+            _logger.LogError(EventEmitterDiagnostic.FatalExceptionEventId, exception,
+                "Event emitter fatal exception");
         }
     }
 }

@@ -22,7 +22,6 @@ namespace Prxlk.ComponentRegistrar
                 o.AddProfiles(typeof(ProxyParseMappingProfile).Assembly);
             });
 
-            services.AddMediatR(typeof(GetProxiesQueryHandler));
             // Covariant registration not supported in MC DI :(
             services.AddTransient(typeof(INotificationHandler<ProxyParseRequested>), typeof(ProxyParseCoordinator));
             services.AddTransient(typeof(INotificationHandler<ProxyParsed>), typeof(ProxyParseCoordinator));

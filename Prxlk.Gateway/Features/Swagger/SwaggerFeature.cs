@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -8,7 +9,7 @@ namespace Prxlk.Gateway.Features.Swagger
     public class SwaggerFeature : GatewayFeature
     {
         /// <inheritdoc />
-        public override void RegisterFeature(IServiceCollection services)
+        public override void RegisterFeature(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSwaggerGen(o => 
             {
@@ -21,7 +22,7 @@ namespace Prxlk.Gateway.Features.Swagger
         }
 
         /// <inheritdoc />
-        public override void UseFeature(IApplicationBuilder app)
+        public override void UseFeature(IApplicationBuilder app, IConfiguration configuration)
         {
             app.UseSwagger();
             app.UseSwaggerUI(s =>

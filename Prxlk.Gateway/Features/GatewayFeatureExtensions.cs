@@ -28,18 +28,18 @@ namespace Prxlk.Gateway.Features
             foreach (var featureType in featureTypes)
             {
                 var feature = (GatewayFeature)Activator.CreateInstance(featureType);     
-                feature.RegisterFeature(services);                  
+                feature.RegisterFeature(services, configuration);                  
                 services.AddSingleton(feature);      
             }
             
             return services;
         }
 
-        public static IApplicationBuilder UseFeatures(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseFeatures(this IApplicationBuilder builder, IConfiguration configuration)
         {
             var features = builder.ApplicationServices.GetServices<GatewayFeature>();
             foreach (var feature in features)
-                feature.UseFeature(builder);
+                feature.UseFeature(builder, configuration);
 
             return builder;
         }
