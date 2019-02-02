@@ -19,12 +19,12 @@ namespace Prxlk.Application.Features.ProxyParse
         }
         
         /// <inheritdoc />
-        public async Task<Message[]> ProcessAsync(ProxyParseRequested @event, CancellationToken cancellation)
+        public Task<Message[]> ProcessAsync(ProxyParseRequested @event, CancellationToken cancellation)
         {
-            return new Message[]
+            return Task.FromResult( new Message[]
             {
                 new ProxyParseCommand(@event.CorrelationId, @event.Source)
-            };
+            });
         }
 
         /// <inheritdoc />
@@ -42,17 +42,17 @@ namespace Prxlk.Application.Features.ProxyParse
         }  
         
         /// <inheritdoc />
-        public async Task<Message[]> ProcessAsync(ProxyInsertedEvent @event, CancellationToken cancellation)
+        public Task<Message[]> ProcessAsync(ProxyInsertedEvent @event, CancellationToken cancellation)
         {
             // Thats all
-            return Array.Empty<Message>();
+            return Task.FromResult(Array.Empty<Message>());
         }
 
         /// <inheritdoc />
-        public async Task<Message[]> ProcessAsync(ProxyParseFailed @event, CancellationToken cancellation)
+        public Task<Message[]> ProcessAsync(ProxyParseFailed @event, CancellationToken cancellation)
         {
             // TODO Log
-            return Array.Empty<Message>();
+            return Task.FromResult(Array.Empty<Message>());
         }
     }
 }

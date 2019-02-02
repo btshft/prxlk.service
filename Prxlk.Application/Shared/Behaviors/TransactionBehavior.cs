@@ -30,7 +30,7 @@ namespace Prxlk.Application.Shared.Behaviors
                     await session.CommitAsync(cancellationToken);
                     return result;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     await session.RollbackAsync(cancellationToken);
                     throw;
