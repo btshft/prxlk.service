@@ -1,3 +1,4 @@
+using System;
 using Prxlk.Application.Shared.Messages;
 
 namespace Prxlk.Application.Features.ProxyParse
@@ -9,7 +10,8 @@ namespace Prxlk.Application.Features.ProxyParse
         public string Protocol { get; }
         public string Country { get; }
         
-        public ProxyInsertCommand(string ip, int port, string protocol, string country)
+        public ProxyInsertCommand(Guid correlationId, string ip, int port, string protocol, string country)
+            : base(correlationId)
         {
             Ip = ip;
             Port = port;

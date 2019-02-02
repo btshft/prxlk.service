@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using MediatR;
 using Microsoft.Extensions.Options;
 using Prxlk.Application.Shared.Options;
 using Prxlk.Contracts;
@@ -19,6 +16,8 @@ namespace Prxlk.Application.Features.ProxyParse.Strategies
     {
         private readonly HttpClient _client;
         private readonly ProxySourceOption _option;
+        private readonly Lazy<Task<HtmlNodeCollection>> _proxyNodesProvider;
+        private int _position;
         
         public SslProxyParseStrategy(IOptions<ServiceOptions> options)
         {
@@ -38,65 +37,62 @@ namespace Prxlk.Application.Features.ProxyParse.Strategies
             
             _client.DefaultRequestHeaders.TryAddWithoutValidation(
                 "User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0");
+            
+            _proxyNodesProvider = new Lazy<Task<HtmlNodeCollection>>(GetProxyNodesAsync);
+        }
+
+        /// <inheritdoc />
+        public async Task<ProxyTransportModel> GetNextAsync(CancellationToken cancellation)
+        {
+            var proxies = _proxyNodesProvider.IsValueCreated 
+                ? (_proxyNodesProvider.Value.Result) 
+                : await _proxyNodesProvider.Value;
+
+            if (proxies == null || proxies.Count == 0)
+                return null;
+
+            var retProxyRow = proxies.ElementAtOrDefault(_position);
+            if (retProxyRow == null)
+                return null;
+
+            _position++;
+
+            var parameters = retProxyRow.SelectNodes("td");
+
+            var ip = parameters[0].InnerText;
+            var port = parameters[1].InnerLength;
+            var country = parameters[3].InnerText; // 2 - country shortcut 
+            var protocol = parameters[6].InnerText == "yes" ? "https" : "http";
+
+            return new ProxyTransportModel
+            {
+                Ip = ip,
+                Port = port,
+                Protocol = protocol,
+                Country = country
+            };
         }
         
-        /// <inheritdoc />
-        public async Task<IReadOnlyCollection<ProxyTransportModel>> ParseAsync(
-            ProxyParseRequest request, CancellationToken cancellation)
+        private async Task<HtmlNodeCollection> GetProxyNodesAsync()
         {
-            try
+            using (var response = await _client.GetAsync(_option.Url))
             {
-                using (var response =  await _client.GetAsync(_option.Url, cancellation))
+                if (!response.IsSuccessStatusCode)
                 {
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        var errorContent = response.Content != null
-                            ? await response.Content.ReadAsStringAsync()
-                            : string.Empty;
-                        
-                        throw new HttpRequestException(
-                            $"Request to URI '{_option.Url}' failed with code '{response.StatusCode}'. Response: {errorContent}");
-                    }
+                    var errorContent = response.Content != null
+                        ? await response.Content.ReadAsStringAsync()
+                        : string.Empty;
 
-                    var content = await response.Content.ReadAsStringAsync();
-                    var html = new HtmlDocument();
-                    
-                    html.LoadHtml(content);
-
-                    var rows = html.DocumentNode.SelectNodes("//table[@id = 'proxylisttable']//tbody//tr");
-                    var proxies = new List<ProxyTransportModel>();
-                    
-                    foreach (var row in rows)
-                    {
-                        try
-                        {
-                            var parameters = row.SelectNodes("td");
-
-                            var ip = parameters[0].InnerText;
-                            var port = parameters[1].InnerLength;
-                            var country = parameters[3].InnerText; // 2 - country shortcut 
-                            var protocol = parameters[6].InnerText == "yes" ? "https" : "http";
-
-                            proxies.Add(new ProxyTransportModel
-                            {
-                                Ip = ip,
-                                Port = port,
-                                Protocol = protocol,
-                                Country = country
-                            });
-                        }
-                        catch (Exception e)
-                        {
-                            
-                        }
-                    }
-
-                    return proxies;
+                    throw new HttpRequestException(
+                        $"Request to URI '{_option.Url}' failed with code '{response.StatusCode}'. Response: {errorContent}");
                 }
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Unable to get proxies from {ProxySource.SslProxies}", e);
+
+                var content = await response.Content.ReadAsStringAsync();
+                var html = new HtmlDocument();
+
+                html.LoadHtml(content);
+
+                return html.DocumentNode.SelectNodes("//table[@id = 'proxylisttable']//tbody//tr");
             }
         }
         

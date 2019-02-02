@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Prxlk.Gateway
 {
@@ -8,16 +9,22 @@ namespace Prxlk.Gateway
     {
         public static void Main(string[] args)
         {
-            WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging((hc, lg) =>
-                {
-                    lg.AddConfiguration(hc.Configuration.GetSection("Logging"))
-                        .AddConsole()
-                        .AddDebug();
-                })
-                .UseStartup<Startup>()
-                .Build()
-                .Run();
+            try
+            {
+                WebHost.CreateDefaultBuilder(args)
+                    .UseStartup<Startup>()
+                    .UseSerilog()
+                    .Build()
+                    .Run();
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "Host terminated");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
     }
 }

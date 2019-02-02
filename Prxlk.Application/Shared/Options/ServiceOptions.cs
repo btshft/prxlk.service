@@ -9,6 +9,9 @@ namespace Prxlk.Application.Shared.Options
         public string MongoDbConnectionString { get; set; }
         public string MongoDbDatabaseName { get; set; }
         public ProxySourceOption[] Sources { get; set; }
+        
+        public TimeSpan EmitterWaitTime { get; set; } = TimeSpan.FromSeconds(5);
+        public string[] Features { get; set; } = Array.Empty<string>();
 
         public ProxySourceOption GetSource(ProxySource source)
         {

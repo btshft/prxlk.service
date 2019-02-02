@@ -6,7 +6,6 @@ using MediatR;
 using Prxlk.Application.Shared.Handlers;
 using Prxlk.Domain.DataAccess;
 using Prxlk.Domain.DataAccess.QueryFold;
-using Prxlk.Domain.DataAccess.QueryTransform;
 using Prxlk.Domain.Models;
 
 namespace Prxlk.Application.Features.ProxyParse

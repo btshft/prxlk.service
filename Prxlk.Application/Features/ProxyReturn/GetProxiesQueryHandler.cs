@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Prxlk.Application.Shared.Extensions;
 using Prxlk.Application.Shared.Handlers;
 using Prxlk.Contracts;

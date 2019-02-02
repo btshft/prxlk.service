@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using Prxlk.Application.Features.ProxyParse;
 using Prxlk.Application.Features.ProxyParse.Strategies;
 using Prxlk.Application.Features.ProxyReturn;
-using Prxlk.Application.Shared.Behaviors;
 using Prxlk.Application.Shared.Options;
 using Prxlk.Data.MongoDb;
 using Prxlk.Domain.DataAccess;
@@ -24,7 +23,10 @@ namespace Prxlk.ComponentRegistrar
             });
 
             services.AddMediatR(typeof(GetProxiesQueryHandler));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
+            // Covariant registration not supported in MC DI :(
+            services.AddTransient(typeof(INotificationHandler<ProxyParseRequested>), typeof(ProxyParseCoordinator));
+            services.AddTransient(typeof(INotificationHandler<ProxyParsed>), typeof(ProxyParseCoordinator));
+            services.AddTransient(typeof(INotificationHandler<ProxyParseFailed>), typeof(ProxyParseCoordinator));
         }
 
         public static void AddMongo(this IServiceCollection services)

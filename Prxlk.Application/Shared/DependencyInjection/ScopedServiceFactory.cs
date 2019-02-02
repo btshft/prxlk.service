@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Prxlk.Gateway.DependencyInjection
+namespace Prxlk.Application.Shared.DependencyInjection
 {
     public class ScopedServiceFactory<TService> : IScopedServiceFactory<TService>
     {
@@ -13,16 +13,16 @@ namespace Prxlk.Gateway.DependencyInjection
             _serviceProvider = serviceProvider;
         }
 
-        public IScopedService<TService> CreateScope()
+        public IScopedServiceHolder<TService> CreateScope()
         {
-            return new ScopedService(_serviceProvider.CreateScope());
+            return new ScopedServiceHolder(_serviceProvider.CreateScope());
         }
         
-        private class ScopedService : IScopedService<TService>
+        private class ScopedServiceHolder : IScopedServiceHolder<TService>
         {
             private readonly IServiceScope _scope;
                        
-            public ScopedService(IServiceScope scope)
+            public ScopedServiceHolder(IServiceScope scope)
             {
                 _scope = scope;
             }
@@ -31,6 +31,12 @@ namespace Prxlk.Gateway.DependencyInjection
             public TService GetService()
             {
                 return _scope.ServiceProvider.GetService<TService>();
+            }
+
+            /// <inheritdoc />
+            public TService GetRequiredService()
+            {
+                return _scope.ServiceProvider.GetRequiredService<TService>();
             }
 
             /// <inheritdoc />

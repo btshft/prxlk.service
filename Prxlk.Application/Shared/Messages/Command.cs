@@ -3,13 +3,13 @@ using MediatR;
 
 namespace Prxlk.Application.Shared.Messages
 {
-    public abstract class Command : IRequest<Unit>
+    public abstract class Command : Message, IRequest<Unit>
     {
-        public DateTime Timestamp { get; }
+        protected Command(Guid correlationId) 
+            : base(correlationId)
+        { }
 
         protected Command()
-        {
-            Timestamp = DateTime.UtcNow;
-        }
+        { }
     }
 }

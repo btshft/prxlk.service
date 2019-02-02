@@ -14,12 +14,11 @@ namespace Prxlk.Data.MongoDb
             _session = provider.GetClient().StartSession();
             _session.StartTransaction();
         }
-        
+
         /// <inheritdoc />
-        public Task CommitAsync(CancellationToken cancellation)
+        public async Task CommitAsync(CancellationToken cancellation)
         {
-            _session.CommitTransaction(cancellation);
-            return Task.CompletedTask;
+            await _session.CommitTransactionAsync(cancellation);
         }
 
         /// <inheritdoc />

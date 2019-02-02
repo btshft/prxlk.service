@@ -1,75 +1,60 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Prxlk.Application.Features.ProxyParse;
-using Prxlk.Application.Features.ProxyParse.Strategies;
+using Prxlk.Application.Shared.DependencyInjection;
+using Prxlk.Application.Shared.Messages;
 using Prxlk.Application.Shared.Options;
 using Prxlk.Contracts;
-using Prxlk.Gateway.DependencyInjection;
+using Prxlk.Gateway.Features.Diagnostics;
 
 namespace Prxlk.Gateway.BackgroundServices
 {
-    public class ProxyBackgroundService : IHostedService, IDisposable
+    public class ProxyParseEventEmitter : IHostedService, IDisposable
     {
-        private readonly ILogger _logger;
-        private readonly List<Timer> _refreshProxyTimers;
+        private readonly List<Timer> _proxyParseEmitters;
         private readonly ServiceOptions _options;
-        private readonly IProxyParseStrategyProvider _parseStrategyProvider;
-
         private readonly IScopedServiceFactory<IMediator> _mediatorFactory;
-
-        public ProxyBackgroundService(
+        private readonly DiagnosticSource _diagnosticSource;
+        
+        public ProxyParseEventEmitter(
             IOptions<ServiceOptions> options, 
-            ILogger<ProxyBackgroundService> logger, 
-            IProxyParseStrategyProvider parseStrategyProvider, 
             IScopedServiceFactory<IMediator> mediatorFactory)
         {
             _options = options.Value;
-            _logger = logger;
-            _parseStrategyProvider = parseStrategyProvider;
             _mediatorFactory = mediatorFactory;
-            _refreshProxyTimers = new List<Timer>();
+            _proxyParseEmitters = new List<Timer>();
+            _diagnosticSource = new DiagnosticListener(EventEmitterDiagnostic.ListenerName);
         }
         
         /// <inheritdoc />
         public Task StartAsync(CancellationToken cancellation)
         {
-            _logger.LogInformation("Refresh service is starting");
-            
-            StartTimers(cancellation);
-            
+            StartEmitters(cancellation);           
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
         public Task StopAsync(CancellationToken cancellation)
         {
-            _logger.LogInformation("Refresh service is stopping");
-            
-            StopTimers();
-            
+            StopEmitters();            
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (var timer in _refreshProxyTimers)
-            {
-                try
-                {
-                    timer.Dispose();
-                } catch(Exception e){ }
-            }
+            foreach (var emitter in _proxyParseEmitters)
+                emitter.Dispose();
         }
 
-        private void StartTimers(CancellationToken cancellation)
+        private void StartEmitters(CancellationToken cancellation)
         {
             foreach (var proxySource in Enum.GetValues(typeof(ProxySource)).Cast<ProxySource>())
             {
@@ -79,36 +64,35 @@ namespace Prxlk.Gateway.BackgroundServices
                 var sourceOptions = _options.GetSource(proxySource);
                 var currentProxySource = proxySource;
                 
-                _refreshProxyTimers.Add(CreateTimer(async _ =>
+                _proxyParseEmitters.Add(CreateTimer(async _ =>
                 {
+                    var @event = new ProxyParseRequested(currentProxySource);
+                    
                     try
                     {
-                        // TODO
-                        var strategy = _parseStrategyProvider.GetStrategy(currentProxySource);
-                        var proxies = await strategy.ParseAsync(new ProxyParseRequest(), cancellation);
-
                         using (var scope = _mediatorFactory.CreateScope())
                         {
-                            var mediator = scope.GetService();
-                            foreach (var proxy in proxies)
-                            {
-                                await mediator.Send(new ProxyInsertCommand(
-                                    proxy.Ip, proxy.Port, proxy.Protocol, proxy.Country), cancellation);
-                            }
+                            var mediator = scope.GetRequiredService();                        
+                            await mediator.Publish(@event, cancellation);
                         }
                     }
                     catch (Exception e)
                     {
-                        // Log
+                        if (_diagnosticSource.IsEnabled(EventEmitterDiagnostic.ExceptionEventName))
+                            _diagnosticSource.Write(EventEmitterDiagnostic.ExceptionEventName, new
+                            {
+                                @event = (Event)@event, 
+                                exception = e
+                            });
                     }
 
-                }, sourceOptions.Refresh, TimeSpan.FromSeconds(1)));
+                }, sourceOptions.Refresh,  _options.EmitterWaitTime));
             }
         }
 
-        private void StopTimers()
+        private void StopEmitters()
         {
-            foreach (var timer in _refreshProxyTimers)
+            foreach (var timer in _proxyParseEmitters)
             {
                 timer.Change(Timeout.Infinite, 0);
             }

@@ -1,14 +1,13 @@
-﻿using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Prxlk.Application.Features.ProxyParse;
 using Prxlk.Application.Features.ProxyReturn;
-using Prxlk.Application.Shared.Handlers;
 using Prxlk.Contracts;
 
 namespace Prxlk.Gateway.Controllers
 {
+    [Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController, ApiVersion("1.0")]
     public class ProxyController : ControllerBase
