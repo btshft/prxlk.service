@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prxlk.Shared", "Prxlk.Share
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prxlk.Data.MongoDb", "Prxlk.Data.MongoDb\Prxlk.Data.MongoDb.csproj", "{6910D213-62EC-474E-A2D5-C87A4307B907}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prxlk.IdentityService", "Prxlk.IdentityService\Prxlk.IdentityService.csproj", "{A0E5E17C-DB64-4B87-96B5-A1399D9A6842}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{6910D213-62EC-474E-A2D5-C87A4307B907}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6910D213-62EC-474E-A2D5-C87A4307B907}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6910D213-62EC-474E-A2D5-C87A4307B907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0E5E17C-DB64-4B87-96B5-A1399D9A6842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0E5E17C-DB64-4B87-96B5-A1399D9A6842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0E5E17C-DB64-4B87-96B5-A1399D9A6842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0E5E17C-DB64-4B87-96B5-A1399D9A6842}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
