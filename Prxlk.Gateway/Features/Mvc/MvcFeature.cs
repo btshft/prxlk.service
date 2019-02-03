@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace Prxlk.Gateway.Features.Mvc
 {
@@ -17,7 +18,7 @@ namespace Prxlk.Gateway.Features.Mvc
                     o.OutputFormatters.RemoveType<XmlDataContractSerializerOutputFormatter>();
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonFormatters()
+                .AddJsonFormatters(s => s.Formatting = Formatting.Indented)
                 .AddApiExplorer();
         }
 

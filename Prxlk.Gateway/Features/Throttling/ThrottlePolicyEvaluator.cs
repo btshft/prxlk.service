@@ -1,7 +1,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Prxlk.Gateway.Features.Throttling.Extensions;
 using Prxlk.Gateway.Features.Throttling.Models;
 using Prxlk.Gateway.Features.Throttling.Store;
@@ -13,9 +13,9 @@ namespace Prxlk.Gateway.Features.Throttling
         private static readonly object Sync = new object();
         
         private readonly IThrottleCounterStore _counterStore; 
-        private HttpContext _context;
+        private ActionExecutingContext _context;
 
-        public ThrottlePolicyEvaluator ForContext(HttpContext context)
+        public ThrottlePolicyEvaluator ForContext(ActionExecutingContext context)
         {
             _context = context;
             return this;
@@ -60,7 +60,7 @@ namespace Prxlk.Gateway.Features.Throttling
             
             string GetCounterKey()
             {
-                var key = $"request-throttling-meta:{identity.ClientIp}_{policy.Name}";
+                var key = $"request-throttling-meta:{identity.ClientIp}_{policy.Name}_{identity.RequestRoute}_{identity.RequestVerb}";
                 var keyBytes = Encoding.UTF8.GetBytes(key);
 
                 using (var sha1 = SHA1.Create())

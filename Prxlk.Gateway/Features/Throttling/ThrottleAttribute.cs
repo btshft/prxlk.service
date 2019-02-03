@@ -69,7 +69,7 @@ namespace Prxlk.Gateway.Features.Throttling
             /// <inheritdoc />
             public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
             {
-                var result = _evaluator.ForContext(context.HttpContext)
+                var result = _evaluator.ForContext(context)
                     .Evaluate(_policy);
 
                 if (result.ShouldBypass || result.Reset <= DateTime.UtcNow)
