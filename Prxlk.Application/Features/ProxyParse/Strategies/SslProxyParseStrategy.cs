@@ -60,14 +60,14 @@ namespace Prxlk.Application.Features.ProxyParse.Strategies
             var parameters = retProxyRow.SelectNodes("td");
 
             var ip = parameters[0].InnerText;
-            var port = parameters[1].InnerLength;
+            var port = parameters[1].InnerText;
             var country = parameters[3].InnerText; // 2 - country shortcut 
             var protocol = parameters[6].InnerText == "yes" ? "https" : "http";
 
             return new ProxyTransportModel
             {
-                Ip = ip,
-                Port = port,
+                Ip = IPAddress.Parse(ip).ToString(),
+                Port = int.Parse(port),
                 Protocol = protocol,
                 Country = country
             };
