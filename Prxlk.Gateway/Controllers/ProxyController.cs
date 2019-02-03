@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Prxlk.Application.Features.ProxyReturn;
 using Prxlk.Contracts;
+using Prxlk.Gateway.Features.Throttling;
+using Prxlk.Gateway.Models;
 
 namespace Prxlk.Gateway.Controllers
 {
@@ -18,8 +20,9 @@ namespace Prxlk.Gateway.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet]
+        [HttpGet, Throttle]
         [ProducesResponseType(typeof(ProxyEnvelope), statusCode: 200)]
+        [ProducesErrorResponseType(typeof(ApiError))]
         [Produces("application/json")]
         public async Task<IActionResult> GetProxies([FromQuery] GetProxyRequest request)
         {

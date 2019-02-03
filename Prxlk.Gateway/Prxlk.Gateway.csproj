@@ -24,9 +24,4 @@
       <ProjectReference Include="..\Prxlk.Contracts\Prxlk.Contracts.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="BackgroundServices" />
-      <Folder Include="Middleware" />
-    </ItemGroup>
-
 </Project>
