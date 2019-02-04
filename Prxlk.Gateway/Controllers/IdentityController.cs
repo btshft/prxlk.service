@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Prxlk.IdentityService.Features.Models;
+using Prxlk.Gateway.Models;
 
-namespace Prxlk.IdentityService.Controllers
+namespace Prxlk.Gateway.Controllers
 {
     [Route("api/[controller]"), ApiController]
     public class IdentityController : ControllerBase

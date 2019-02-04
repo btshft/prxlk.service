@@ -1,6 +1,6 @@
 using System;
 
-namespace Prxlk.IdentityService.Features.Models
+namespace Prxlk.Gateway.Models
 {
     public class RequestCertificate
     {
