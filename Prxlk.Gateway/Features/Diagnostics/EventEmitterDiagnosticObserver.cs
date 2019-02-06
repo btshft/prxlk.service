@@ -20,12 +20,11 @@ namespace Prxlk.Gateway.Features.Diagnostics
         }
 
         [DiagnosticName(EventEmitterDiagnostic.EmitExceptionEventName)]
-        public void OnEmitException(Event @event, Exception exception)
+        public void OnEmitException(Exception exception)
         {
             _logger
                 .ForContext("EventId",  EventEmitterDiagnostic.EmitExceptionEvent.Id)
                 .ForContext("EventName", EventEmitterDiagnostic.EmitExceptionEvent.Name)
-                .ForContext("CorrelationId", @event.CorrelationId)
                 .Error(exception, "Event emit failed {CorrelationId}");
         }
 

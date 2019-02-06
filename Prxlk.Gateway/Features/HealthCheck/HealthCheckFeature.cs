@@ -25,7 +25,7 @@ namespace Prxlk.Gateway.Features.HealthCheck
                         new MongoHealthCheck(sp.GetRequiredService<IMongoDatabaseProvider>()),
                     null, null));
 
-            if (configuration.IsFeatureEnabled("EventEmit"))
+            if (configuration.IsFeatureEnabled("ScheduledEventEmit"))
             {
                 healthChecksBuilder.Add(new HealthCheckRegistration("event_emitter", sp =>
                         new EventEmitterHealthCheck(sp.GetRequiredService<IScopedServiceFactory<IMediator>>()),
