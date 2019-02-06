@@ -9,6 +9,7 @@ using Prxlk.Contracts;
 
 namespace Prxlk.Gateway.Features.ScheduledEventEmit.Emitters
 {
+    [EventEmitterCategory("ProxyParse")]
     public class ProxyParseEventEmitter : ScheduledEmitter
     {
         private readonly IScopedServiceFactory<IMediator> _mediatorScope;

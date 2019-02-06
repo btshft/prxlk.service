@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prxlk.Application.Shared.DependencyInjection;
 using Prxlk.Data.MongoDb;
+using Prxlk.Gateway.Features.ScheduledEventEmit;
 
 namespace Prxlk.Gateway.Features.HealthCheck
 {
@@ -25,7 +26,7 @@ namespace Prxlk.Gateway.Features.HealthCheck
                         new MongoHealthCheck(sp.GetRequiredService<IMongoDatabaseProvider>()),
                     null, null));
 
-            if (configuration.IsFeatureEnabled("ScheduledEventEmit"))
+            if (configuration.IsFeatureEnabled<ScheduledEventEmitFeature>())
             {
                 healthChecksBuilder.Add(new HealthCheckRegistration("event_emitter", sp =>
                         new EventEmitterHealthCheck(sp.GetRequiredService<IScopedServiceFactory<IMediator>>()),

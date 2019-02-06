@@ -56,13 +56,19 @@ namespace Prxlk.Gateway.Features
             return builder;
         }
 
-        public static bool IsFeatureEnabled(this IConfiguration configuration, string name)
+        public static bool IsFeatureEnabled<TFeature>(this IConfiguration configuration) where TFeature : GatewayFeature
         {
-            var enabledFeatures = configuration
-                .GetSection("Settings:Features")
-                .Get<string[]>();
+            var featureAttribute = typeof(TFeature).GetCustomAttribute<GatewayFeatureAttribute>();
+            if (featureAttribute != null)
+            {
+                var enabledFeatures = configuration.GetSection("Settings:Features")
+                    .Get<string[]>();
 
-            return enabledFeatures.Any(f => f == name);
+                if (enabledFeatures.Contains(featureAttribute.Name))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

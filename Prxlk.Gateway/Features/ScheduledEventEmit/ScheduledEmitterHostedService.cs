@@ -6,6 +6,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Prxlk.Application.Shared.DependencyInjection;
@@ -24,14 +25,17 @@ namespace Prxlk.Gateway.Features.ScheduledEventEmit
         private readonly DiagnosticSource _diagnosticSource;
         private readonly ServiceOptions _options;
         private readonly IScopedServiceFactory<IMediator> _mediatorFactory;
+        private readonly IConfiguration _configuration;
         
         private bool _isRunning;
 
         public ScheduledEmitterHostedService(
             IOptions<ServiceOptions> options, 
-            IScopedServiceFactory<IMediator> mediatorFactory)
+            IScopedServiceFactory<IMediator> mediatorFactory, 
+            IConfiguration configuration)
         {
             _mediatorFactory = mediatorFactory;
+            _configuration = configuration;
             _emitters = new List<ScheduledEmitter>();
             _diagnosticSource = new DiagnosticListener(EventEmitterDiagnostic.ListenerName);
             _options = options.Value;
@@ -91,6 +95,9 @@ namespace Prxlk.Gateway.Features.ScheduledEventEmit
         /// <inheritdoc />
         public IEnumerable<ProxyParseEventEmitter> Create(CancellationToken cancellation)
         {
+            if (!_configuration.IsEmitterEnabled<ProxyParseEventEmitter>())
+                return Array.Empty<ProxyParseEventEmitter>();
+            
             var emitters = new List<ProxyParseEventEmitter>();
             foreach (var proxySource in Enum.GetValues(typeof(ProxySource)).Cast<ProxySource>())
             {
